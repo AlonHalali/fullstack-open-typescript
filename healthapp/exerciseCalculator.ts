@@ -1,3 +1,5 @@
+import { getExercisesArguments } from './utils.ts';
+
 interface Result {
   periodLength: number;
   trainingDays: number;
@@ -53,7 +55,8 @@ const calculateExercises = (
 };
 
 try {
-  console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+  const { target, exercisesHours } = getExercisesArguments(process.argv);
+  console.log(calculateExercises(exercisesHours, target));
 } catch (error) {
   if (error instanceof Error) console.error(error.message);
 }

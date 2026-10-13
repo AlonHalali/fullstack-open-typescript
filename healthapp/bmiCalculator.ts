@@ -1,3 +1,5 @@
+import { getBMIArguments } from './utils.ts';
+
 const calculateBmi = (height: number, weight: number): string => {
   if (height <= 0) throw new Error('Height must be positive number!');
   if (weight <= 0) throw new Error('Weight must be positive number!');
@@ -16,7 +18,8 @@ const calculateBmi = (height: number, weight: number): string => {
 };
 
 try {
-  console.log(calculateBmi(180, 74));
+  const { weight, height } = getBMIArguments(process.argv);
+  console.log(calculateBmi(height, weight));
 } catch (error) {
   if (error instanceof Error) console.error(error);
 }
