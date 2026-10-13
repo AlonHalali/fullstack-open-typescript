@@ -1,6 +1,6 @@
 import { getBMIArguments } from './utils.ts';
 
-const calculateBmi = (height: number, weight: number): string => {
+export const calculateBmi = (height: number, weight: number): string => {
   if (height <= 0) throw new Error('Height must be positive number!');
   if (weight <= 0) throw new Error('Weight must be positive number!');
   const heightMeter = height / 100;
@@ -17,9 +17,11 @@ const calculateBmi = (height: number, weight: number): string => {
   return 'Obese (Class III)';
 };
 
-try {
-  const { weight, height } = getBMIArguments(process.argv);
-  console.log(calculateBmi(height, weight));
-} catch (error) {
-  if (error instanceof Error) console.error(error);
+if (process.argv[1] === import.meta.filename) {
+  try {
+    const { weight, height } = getBMIArguments(process.argv);
+    console.log(calculateBmi(height, weight));
+  } catch (error) {
+    if (error instanceof Error) console.error(error.message);
+  }
 }

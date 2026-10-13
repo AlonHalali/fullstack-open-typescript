@@ -54,9 +54,11 @@ const calculateExercises = (
   };
 };
 
-try {
-  const { target, exercisesHours } = getExercisesArguments(process.argv);
-  console.log(calculateExercises(exercisesHours, target));
-} catch (error) {
-  if (error instanceof Error) console.error(error.message);
+if (process.argv[1] === import.meta.filename) {
+  try {
+    const { target, exercisesHours } = getExercisesArguments(process.argv);
+    console.log(calculateExercises(exercisesHours, target));
+  } catch (error) {
+    if (error instanceof Error) console.error(error.message);
+  }
 }

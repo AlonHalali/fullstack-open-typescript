@@ -8,7 +8,8 @@ interface ExercisesValues {
   target: number;
 }
 
-const isNumber = (argument: unknown): boolean => !isNaN(Number(argument));
+export const isNumber = (argument: unknown): boolean =>
+  !isNaN(Number(argument));
 
 export const getBMIArguments = (args: string[]): BmiValues => {
   if (args.length < 4) throw new Error('Not enough arguments');
