@@ -32,7 +32,7 @@ export const getExercisesArguments = (args: string[]): ExercisesValues => {
     target = Number(args[2]);
   } else throw new Error("You coward—you're afraid to set a numerical target.");
 
-  let exercisesHours: number[] = [];
+  const exercisesHours: number[] = [];
 
   for (let i: number = 3; i < args.length; i++) {
     if (!isNumber(args[i]))
