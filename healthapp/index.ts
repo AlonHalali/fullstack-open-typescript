@@ -1,9 +1,11 @@
 import express from 'express';
 
 import { calculateBmi } from './bmiCalculator.ts';
+import { calculateExercises } from './exerciseCalculator.ts';
 import { isNumber } from './utils.ts';
 
 const app = express();
+app.use(express.json());
 
 app.get('/hello', (_req, res) => {
   res.send('Hello Full Stack!');
@@ -32,6 +34,25 @@ app.get('/bmi', (req, res) => {
   } catch {
     return res.send({ error: 'malformatted parameters' });
   }
+});
+
+app.post('/exercises', (req, res) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { daily_exercises, target } = req.body;
+
+  if (!target || !daily_exercises)
+    return res.json({ error: 'parameters missing' });
+
+  if (
+    !isNumber(target) ||
+    !Array.isArray(daily_exercises) ||
+    daily_exercises.some((item) => !isNumber(item))
+  )
+    return res.json({ error: 'malformatted parameters' });
+
+  return res.json(
+    calculateExercises(daily_exercises as number[], Number(target)),
+  );
 });
 
 const PORT = 3003;
