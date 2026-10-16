@@ -1,6 +1,4 @@
-interface HeaderProps {
-  name: string;
-}
+import type { HeaderProps } from '../types';
 
 const Header = ({ name }: HeaderProps) => <h1>{name}</h1>;
 
