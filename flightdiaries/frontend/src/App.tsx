@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import type { NewDiaryEntry, DiaryEntry } from './types';
-import DiaryService from './services/diaryService';
 import diaryService from './services/diaryService';
 import DiaryForm from './components/DiaryForm';
 import Diaries from './components/Diaries';
@@ -11,7 +10,7 @@ const App = () => {
   const [diaries, setDiaries] = useState<DiaryEntry[]>([]);
 
   useEffect(() => {
-    DiaryService.getAll().then((initialDiaries) => {
+    diaryService.getAll().then((initialDiaries) => {
       setDiaries(initialDiaries);
     });
   }, []);

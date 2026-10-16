@@ -44,45 +44,56 @@ const DiaryForm = ({ addDiary }: DiaryFormProps) => {
       <Notification notification={notification} />
       <form onSubmit={handleSubmit}>
         <div>
-          <label>
-            Weather
-            <input
-              type="text"
-              value={weather}
-              onChange={(event) => {
-                setWeather(event.target.value);
-              }}
-            />
-          </label>
+          <strong>Weather:</strong>
+          <br />
+          {['sunny', 'rainy', 'cloudy', 'stormy', 'windy'].map((w) => (
+            <label key={w}>
+              <input
+                type="radio"
+                name="weather"
+                checked={weather === w}
+                onChange={() => setWeather(w)}
+              />
+              {w.charAt(0).toUpperCase() + w.slice(1)}
+            </label>
+          ))}
         </div>
+
         <div>
-          <label>
-            Visibility
-            <input
-              type="text"
-              value={visibility}
-              onChange={(event) => {
-                setVisibility(event.target.value);
-              }}
-            />
-          </label>
+          <strong>Visibility:</strong>
+          <br />
+          {['great', 'good', 'ok', 'poor'].map((v) => (
+            <label key={v}>
+              <input
+                type="radio"
+                name="visibility"
+                checked={visibility === v}
+                onChange={() => setVisibility(v)}
+              />
+              {v.charAt(0).toUpperCase() + v.slice(1)}
+            </label>
+          ))}
         </div>
 
         <div>
           <label>
-            Date
+            <strong>Date:</strong>
+            <br />
             <input
-              type="text"
+              type="date"
               value={date}
               onChange={(event) => {
                 setDate(event.target.value);
               }}
             />
           </label>
+          <br />
         </div>
+
         <div>
           <label>
-            Comment
+            <strong>Comment:</strong>
+            <br />
             <input
               type="text"
               value={comment}
@@ -90,9 +101,10 @@ const DiaryForm = ({ addDiary }: DiaryFormProps) => {
                 setComment(event.target.value);
               }}
             />
+            <br />
           </label>
         </div>
-        <button type="submit">create</button>
+        <button type="submit">add</button>
       </form>
     </div>
   );
