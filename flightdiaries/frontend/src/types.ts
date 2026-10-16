@@ -1,3 +1,4 @@
+//Diary
 import { z } from 'zod';
 
 export const NewEntrySchema = z.object({
@@ -13,9 +14,15 @@ export interface DiaryEntry extends NewDiaryEntry {
   id: string;
 }
 
+// Notification
+export interface NotificationT {
+  message: string;
+  isError: boolean;
+}
+
 // Props
 export interface DiaryFormProps {
-  addDiary: (diaryToAdd: NewDiaryEntry) => Promise<boolean>;
+  addDiary: (diaryToAdd: NewDiaryEntry) => Promise<string>;
 }
 
 export interface DiaryProps {
@@ -24,4 +31,8 @@ export interface DiaryProps {
 
 export interface DiariesProps {
   diaries: DiaryEntry[];
+}
+
+export interface NotificationProps {
+  notification: NotificationT | null;
 }

@@ -16,15 +16,16 @@ const App = () => {
     });
   }, []);
 
-  const addDiary = async (diaryToAdd: NewDiaryEntry): Promise<boolean> => {
+  const addDiary = async (diaryToAdd: NewDiaryEntry): Promise<string> => {
     try {
       const returnedDiary = await diaryService.create(diaryToAdd);
       setDiaries(diaries.concat(returnedDiary));
-      return true;
+      return '';
     } catch (error: unknown) {
-      if (axios.isAxiosError(error) && error.response)
-        console.error(error.response.data);
-      return false;
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response?.data?.error?.[0]?.message || error.message;
+      }
+      return 'Unknown error';
     }
   };
 
