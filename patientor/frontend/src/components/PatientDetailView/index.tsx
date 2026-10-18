@@ -5,14 +5,17 @@ import axios from 'axios';
 import { Paper, Stack, Typography } from '@mui/material';
 import { Female, Male } from '@mui/icons-material';
 
-import { Patient } from '../../types';
+import { Patient, Diagnosis } from '../../types';
 import patientsService from '../../services/patients';
-import Entry from './Entry';
+import diagnosesService from '../../services/diagnoses';
+import EntryComponent from './EntryComponent';
 
 const PatientDetailView = () => {
   const [patient, setPatient] = useState<Patient | null>(null);
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
   const [error, setError] = useState<string | null>(null);
   const { id } = useParams<{ id: string }>();
+
   useEffect(() => {
     if (id) {
       patientsService
@@ -28,6 +31,12 @@ const PatientDetailView = () => {
     }
   }, [id]);
 
+  useEffect(() => {
+    diagnosesService.getAll().then((initialDiagnoses) => {
+      setDiagnoses(initialDiagnoses);
+    });
+  }, []);
+
   if (error)
     return (
       <div>
@@ -36,7 +45,7 @@ const PatientDetailView = () => {
       </div>
     );
 
-  if (!patient)
+  if (!patient || !diagnoses)
     return (
       <div>
         <h1>Loading...</h1>
@@ -71,15 +80,17 @@ const PatientDetailView = () => {
           <strong>date of birth:</strong> {patient.dateOfBirth}
         </Typography>
 
-        {patient.entries.length && (
+        {patient.entries.length ? (
           <>
             <Typography variant="h5" component="h5" sx={{ pt: 3 }}>
               Entries
             </Typography>
             {patient.entries.map((e) => (
-              <Entry key={e.id} entry={e} />
+              <EntryComponent key={e.id} entry={e} diagnoses={diagnoses} />
             ))}
           </>
+        ) : (
+          <></>
         )}
       </Stack>
     </Paper>
