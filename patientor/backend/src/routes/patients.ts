@@ -31,6 +31,19 @@ router.post(
   },
 );
 
+router.get(
+  '/:id',
+  (
+    req: Request<{ id: string }>,
+    res: Response<Patient | { error: string }>,
+  ) => {
+    const patient = patientService.getPatient(req.params.id);
+    if (!patient)
+      res.status(404).json({ error: 'Patient with this id not found!' });
+    else res.json(patient);
+  },
+);
+
 router.use(errorMiddleware);
 
 export default router;
