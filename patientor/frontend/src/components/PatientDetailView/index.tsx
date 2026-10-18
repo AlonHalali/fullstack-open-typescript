@@ -5,8 +5,9 @@ import axios from 'axios';
 import { Paper, Stack, Typography } from '@mui/material';
 import { Female, Male } from '@mui/icons-material';
 
-import { Patient } from '../types';
-import patientsService from '../services/patients';
+import { Patient } from '../../types';
+import patientsService from '../../services/patients';
+import Entry from './Entry';
 
 const PatientDetailView = () => {
   const [patient, setPatient] = useState<Patient | null>(null);
@@ -48,6 +49,7 @@ const PatientDetailView = () => {
     padding: 0,
     margin: 0,
   };
+
   return (
     <Paper elevation={8} sx={{ my: 3, p: 3 }}>
       <Stack spacing={1}>
@@ -56,18 +58,29 @@ const PatientDetailView = () => {
           {patient.gender === 'male' && <Male sx={genderIconStyle} />}
           {patient.gender === 'female' && <Female sx={genderIconStyle} />}
         </Typography>
+
         <Typography variant="body1">
           <strong>ssn:</strong> {patient.ssn}
         </Typography>
+
         <Typography variant="body1">
           <strong>occupation:</strong> {patient.occupation}
         </Typography>
+
         <Typography variant="body1">
           <strong>date of birth:</strong> {patient.dateOfBirth}
         </Typography>
-        <Typography variant="body1">
-          <strong>entries:</strong> {patient.entries.length ? 'items' : 'N/A'}
-        </Typography>
+
+        {patient.entries.length && (
+          <>
+            <Typography variant="h5" component="h5" sx={{ pt: 3 }}>
+              Entries
+            </Typography>
+            {patient.entries.map((e) => (
+              <Entry key={e.id} entry={e} />
+            ))}
+          </>
+        )}
       </Stack>
     </Paper>
   );

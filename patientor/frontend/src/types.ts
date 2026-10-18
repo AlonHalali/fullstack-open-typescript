@@ -1,17 +1,54 @@
+// ─── Constants ────────────────────────────────────────────
+export const Gender = {
+  Male: 'male',
+  Female: 'female',
+  Other: 'other',
+} as const;
+export type Gender = (typeof Gender)[keyof typeof Gender];
+
+const HealthCheckRating = {
+  Healthy: 0,
+  LowRisk: 1,
+  HighRisk: 2,
+  CriticalRisk: 3,
+} as const;
+export type HealthCheckRating =
+  (typeof HealthCheckRating)[keyof typeof HealthCheckRating];
+
+// ─── Types ────────────────────────────────────────────────
 export interface Diagnosis {
   code: string;
   name: string;
   latin?: string;
 }
 
-export enum Gender {
-  Male = 'male',
-  Female = 'female',
-  Other = 'other',
+interface BaseEntry {
+  id: string;
+  date: string;
+  specialist: string;
+  diagnosisCodes?: Array<string>;
+  description: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface Entry {}
+export interface HealthCheckEntry extends BaseEntry {
+  type: 'HealthCheck';
+  healthCheckRating: HealthCheckRating;
+}
+export interface OccupationalHealthcareEntry extends BaseEntry {
+  type: 'OccupationalHealthcare';
+  employerName: string;
+  sickLeave?: { startDate: string; endDate: string };
+}
+export interface HospitalEntry extends BaseEntry {
+  type: 'Hospital';
+  discharge?: { date: string; criteria: string };
+}
+
+export type Entry =
+  | HealthCheckEntry
+  | OccupationalHealthcareEntry
+  | HospitalEntry;
+
 export interface Patient {
   id: string;
   name: string;
@@ -21,5 +58,13 @@ export interface Patient {
   dateOfBirth?: string;
   entries: Entry[];
 }
+
+// ─── Type Helpers ─────────────────────────────────────────
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown
+  ? Omit<T, K>
+  : never;
+
+// ─── Input Types ──────────────────────────────────────────
+export type NewEntry = UnionOmit<Entry, 'id'>;
 
 export type PatientFormValues = Omit<Patient, 'id' | 'entries'>;
