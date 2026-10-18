@@ -10,6 +10,7 @@ import {
   TableBody,
 } from '@mui/material';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 import { PatientFormValues, Patient } from '../../types';
 import AddPatientModal from '../AddPatientModal';
@@ -77,7 +78,16 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
         <TableBody>
           {Object.values(patients).map((patient: Patient) => (
             <TableRow key={patient.id}>
-              <TableCell>{patient.name}</TableCell>
+              <TableCell>
+                <Button
+                  component={Link}
+                  to={`/patients/${patient.id}`}
+                  variant="outlined"
+                  color="primary"
+                >
+                  {patient.name}
+                </Button>
+              </TableCell>
               <TableCell>{patient.gender}</TableCell>
               <TableCell>{patient.occupation}</TableCell>
               <TableCell>
