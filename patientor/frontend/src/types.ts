@@ -6,7 +6,7 @@ export const Gender = {
 } as const;
 export type Gender = (typeof Gender)[keyof typeof Gender];
 
-const HealthCheckRating = {
+export const HealthCheckRating = {
   Healthy: 0,
   LowRisk: 1,
   HighRisk: 2,

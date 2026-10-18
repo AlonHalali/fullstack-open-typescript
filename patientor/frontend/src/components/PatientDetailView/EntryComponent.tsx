@@ -1,33 +1,156 @@
-import { Typography, Stack } from '@mui/material';
+import { Typography, Box, LinearProgress, Stack } from '@mui/material';
+import {
+  MedicalServices,
+  LocalHospital,
+  MedicalInformation,
+} from '@mui/icons-material';
 
-import type { Entry, Diagnosis } from '../../types';
+import { type Entry, type Diagnosis, HealthCheckRating } from '../../types';
+import { assertNever } from '../../utils';
 
 interface Props {
   entry: Entry;
   diagnoses: Diagnosis[];
 }
 
+const EntryDetails = (entry: Entry) => {
+  switch (entry.type) {
+    case 'HealthCheck':
+      let color: 'error' | 'info' | 'success' | 'warning' = 'warning';
+      let value: number = 0;
+      let text: string = '';
+      switch (entry.healthCheckRating) {
+        case HealthCheckRating.Healthy:
+          color = 'success';
+          value = 0;
+          text = 'Healthy';
+          break;
+        case HealthCheckRating.LowRisk:
+          color = 'info';
+          value = 33;
+          text = 'Low risk';
+          break;
+        case HealthCheckRating.HighRisk:
+          color = 'warning';
+          value = 66;
+          text = 'High risk';
+          break;
+        case HealthCheckRating.CriticalRisk:
+          color = 'error';
+          value = 99;
+          text = 'Critical risk';
+          break;
+      }
+      return {
+        icon: <MedicalServices />,
+        details: (
+          <Stack>
+            <Typography variant="body1" color={color}>
+              {text}
+            </Typography>
+            <LinearProgress
+              variant="determinate"
+              color={color}
+              value={value}
+              sx={{
+                width: 300,
+                height: 10,
+                borderRadius: 5,
+              }}
+            />
+          </Stack>
+        ),
+      };
+    case 'OccupationalHealthcare':
+      return {
+        icon: <MedicalInformation />,
+        details: (
+          <Stack>
+            <Typography variant="inherit">
+              <strong>Employ:</strong> {entry.employerName}
+            </Typography>
+            {entry.sickLeave && (
+              <>
+                <Typography variant="inherit">
+                  <strong>Start date:</strong> {entry.sickLeave.startDate}
+                </Typography>
+                <Typography variant="inherit">
+                  <strong>End date:</strong> {entry.sickLeave.endDate}
+                </Typography>
+              </>
+            )}
+          </Stack>
+        ),
+      };
+    case 'Hospital':
+      return {
+        icon: <LocalHospital />,
+        details: (
+          <Stack>
+            {entry.discharge && (
+              <>
+                <Typography variant="inherit">
+                  <strong>Date:</strong> {entry.discharge.date}
+                </Typography>
+                <Typography variant="inherit">
+                  <strong>Criteria:</strong> {entry.discharge.criteria}
+                </Typography>
+              </>
+            )}
+          </Stack>
+        ),
+      };
+    default:
+      return assertNever(entry);
+  }
+};
+
 const EntryComponent = ({ entry, diagnoses }: Props) => {
-  console.log(entry.diagnosisCodes);
+  const { icon, details } = EntryDetails(entry);
 
   return (
-    <Stack>
-      <Typography variant="inherit">
-        {entry.date} {entry.description}
+    <Box
+      component="section"
+      sx={{
+        p: 2,
+        border: '1px solid grey',
+        borderRadius: 5,
+        bgcolor: 'transparent',
+        transition: 'background-color 0.5s ease',
+        '&:hover': {
+          bgcolor: 'ButtonFace',
+        },
+      }}
+    >
+      {icon}
+      <Typography variant="body1" color="textSecondary">
+        {entry.date}
+        <br />
+        {entry.description}
       </Typography>
+      <br />
+      <Typography variant="inherit"></Typography>
+      {details}
+      <br />
       {entry.diagnosisCodes && (
-        <ul>
-          {entry.diagnosisCodes.map((code) => {
-            console.log(code);
-            return (
-              <li key={code}>
-                {code} {diagnoses.find((d) => d.code === code)?.name}
-              </li>
-            );
-          })}
-        </ul>
+        <>
+          <strong>diagnosisCodes:</strong>
+          <ul>
+            {entry.diagnosisCodes.map((code) => {
+              console.log(code);
+              return (
+                <li key={code}>
+                  {code} {diagnoses.find((d) => d.code === code)?.name}
+                </li>
+              );
+            })}
+          </ul>
+        </>
       )}
-    </Stack>
+      <Typography variant="caption" color="textSecondary">
+        diagnose by {entry.specialist}
+      </Typography>
+    </Box>
   );
 };
 
