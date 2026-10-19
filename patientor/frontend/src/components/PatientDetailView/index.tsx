@@ -9,6 +9,7 @@ import { Patient, Diagnosis } from '../../types';
 import patientsService from '../../services/patients';
 import diagnosesService from '../../services/diagnoses';
 import EntryComponent from './EntryComponent';
+import EntryForm from './EntryForm';
 
 const PatientDetailView = () => {
   const [patient, setPatient] = useState<Patient | null>(null);
@@ -52,6 +53,10 @@ const PatientDetailView = () => {
       </div>
     );
 
+  const handleAddEntry = (updatedPatient: Patient) => {
+    setPatient(updatedPatient);
+  };
+
   const genderIconStyle = {
     fontSize: 20,
     color: patient.gender === 'male' ? 'blue' : 'pink',
@@ -79,7 +84,7 @@ const PatientDetailView = () => {
         <Typography variant="body1">
           <strong>date of birth:</strong> {patient.dateOfBirth}
         </Typography>
-
+        <EntryForm patientId={patient.id} handleAddEntry={handleAddEntry} />
         {patient.entries.length ? (
           <>
             <Typography variant="h5" component="h5" sx={{ pt: 3 }}>
