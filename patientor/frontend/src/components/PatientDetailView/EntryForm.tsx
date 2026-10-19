@@ -1,8 +1,11 @@
 import {
+  Box,
   Button,
+  Chip,
   FormControl,
   InputLabel,
   MenuItem,
+  OutlinedInput,
   Paper,
   Select,
   Stack,
@@ -16,7 +19,13 @@ import {
 } from '@mui/icons-material';
 import { useState } from 'react';
 
-import { type NewEntry, HealthCheckRating, Patient } from '../../types';
+import {
+  type NewEntry,
+  Diagnosis,
+  HealthCheckRating,
+  Patient,
+  healthCheckRatingOptions,
+} from '../../types';
 
 import Notification from '../Notification';
 import { NotificationProps, Severity } from '../Notification';
@@ -27,6 +36,7 @@ import axios from 'axios';
 interface Props {
   patientId: string;
   handleAddEntry: (updatedPatient: Patient) => void;
+  diagnoses: Diagnosis[];
 }
 
 const FormTypes = {
@@ -38,7 +48,7 @@ type FormTypes = (typeof FormTypes)[keyof typeof FormTypes];
 
 type EntryFormValues = Omit<
   NewEntry,
-  'healthCheckRating' | 'sickLeave' | 'discharge' | 'diagnosisCodes'
+  'healthCheckRating' | 'sickLeave' | 'discharge'
 > & {
   healthCheckRating: string;
   employerName: string;
@@ -46,7 +56,6 @@ type EntryFormValues = Omit<
   sickLeaveEnd?: string;
   dischargeDate?: string;
   dischargeCriteria?: string;
-  diagnosisCodes?: string;
 };
 
 const initialState: EntryFormValues = {
@@ -54,7 +63,7 @@ const initialState: EntryFormValues = {
   date: '',
   specialist: '',
   description: '',
-  diagnosisCodes: '',
+  diagnosisCodes: [],
   healthCheckRating: '',
   employerName: '',
   sickLeaveStart: '',
@@ -63,7 +72,7 @@ const initialState: EntryFormValues = {
   dischargeCriteria: '',
 };
 
-const EntryForm = ({ patientId, handleAddEntry }: Props) => {
+const EntryForm = ({ patientId, handleAddEntry, diagnoses }: Props) => {
   const [newEntry, setNewEntry] = useState<EntryFormValues>(initialState);
 
   const [notification, setNotification] = useState<NotificationProps | null>(
@@ -85,10 +94,8 @@ const EntryForm = ({ patientId, handleAddEntry }: Props) => {
       description: newEntry.description,
       specialist: newEntry.specialist,
       ...(newEntry.diagnosisCodes &&
-        newEntry.diagnosisCodes.trim() && {
-          diagnosisCodes: newEntry.diagnosisCodes
-            .split(',')
-            .map((code) => code.trim()),
+        newEntry.diagnosisCodes.length && {
+          diagnosisCodes: newEntry.diagnosisCodes,
         }),
     };
 
@@ -166,22 +173,29 @@ const EntryForm = ({ patientId, handleAddEntry }: Props) => {
     case FormTypes.HealthCheck:
       icon = <MedicalServices />;
       inputs = (
-        <Stack spacing={2}>
-          <TextField
-            id="outlined-basic"
-            label="Health Check Rating (0-3)"
-            variant="outlined"
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">
+            Health Check Rating
+          </InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
             value={newEntry.healthCheckRating}
-            onChange={(event) =>
+            label="Health Check Rating"
+            onChange={(event) => {
               setNewEntry({
                 ...newEntry,
                 healthCheckRating: event.target.value,
-              })
-            }
-            required
-            fullWidth
-          />
-        </Stack>
+              });
+            }}
+          >
+            {healthCheckRatingOptions.map((o) => (
+              <MenuItem key={o.value} value={o.value}>
+                {o.value} — {o.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       );
       break;
 
@@ -216,6 +230,7 @@ const EntryForm = ({ patientId, handleAddEntry }: Props) => {
 
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <TextField
+                  type="date"
                   id="outlined-basic"
                   label="Start Date"
                   variant="outlined"
@@ -230,6 +245,7 @@ const EntryForm = ({ patientId, handleAddEntry }: Props) => {
                 />
 
                 <TextField
+                  type="date"
                   id="outlined-basic"
                   label="End Date"
                   variant="outlined"
@@ -267,6 +283,7 @@ const EntryForm = ({ patientId, handleAddEntry }: Props) => {
               </Typography>
 
               <TextField
+                type="date"
                 id="outlined-basic"
                 label="Date"
                 variant="outlined"
@@ -368,7 +385,7 @@ const EntryForm = ({ patientId, handleAddEntry }: Props) => {
             label="Enter Type"
             onChange={(event) => {
               setNewEntry({
-                ...initialState,
+                ...newEntry,
                 type: event.target.value,
               });
             }}
@@ -388,10 +405,10 @@ const EntryForm = ({ patientId, handleAddEntry }: Props) => {
         </Typography>
 
         <TextField
+          type="date"
           id="outlined-basic"
           label="Date"
           variant="outlined"
-          placeholder="YYYY-MM-DD"
           value={newEntry.date}
           onChange={(event) => {
             setNewEntry({ ...newEntry, date: event.target.value });
@@ -426,17 +443,38 @@ const EntryForm = ({ patientId, handleAddEntry }: Props) => {
           fullWidth
         />
 
-        <TextField
-          id="outlined-basic"
-          label="Diagnosis Code (comma-separated)"
-          variant="outlined"
-          value={newEntry.diagnosisCodes}
-          onChange={(event) => {
-            setNewEntry({ ...newEntry, diagnosisCodes: event.target.value });
-          }}
-          fullWidth
-          helperText="Separate multiple diagnosis codes with commas."
-        />
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Diagnosis Codes</InputLabel>
+          <Select
+            labelId="demo-multiple-chip-label"
+            id="demo-multiple-chip"
+            multiple
+            value={newEntry.diagnosisCodes}
+            label="Diagnosis Codes"
+            onChange={(event) => {
+              const { value } = event.target;
+              setNewEntry({
+                ...newEntry,
+                diagnosisCodes:
+                  typeof value === 'string' ? value.split(',') : value,
+              });
+            }}
+            input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+            renderValue={(selected) => (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                {selected.map((value) => (
+                  <Chip key={value} label={value} />
+                ))}
+              </Box>
+            )}
+          >
+            {diagnoses.map((d) => (
+              <MenuItem key={d.code} value={d.code}>
+                {d.code} - {d.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </Stack>
 
       <Paper

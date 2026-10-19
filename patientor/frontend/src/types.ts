@@ -15,6 +15,12 @@ export const HealthCheckRating = {
 export type HealthCheckRating =
   (typeof HealthCheckRating)[keyof typeof HealthCheckRating];
 
+export const healthCheckRatingOptions = [
+  { value: 0, label: 'Healthy' },
+  { value: 1, label: 'Low Risk' },
+  { value: 2, label: 'High Risk' },
+  { value: 3, label: 'Critical Risk' },
+];
 // ─── Types ────────────────────────────────────────────────
 export interface Diagnosis {
   code: string;

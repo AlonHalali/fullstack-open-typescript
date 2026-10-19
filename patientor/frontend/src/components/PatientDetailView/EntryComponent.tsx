@@ -8,6 +8,8 @@ import {
 import { type Entry, type Diagnosis, HealthCheckRating } from '../../types';
 import { assertNever } from '../../utils';
 
+import { healthCheckRatingOptions } from '../../types';
+
 interface Props {
   entry: Entry;
   diagnoses: Diagnosis[];
@@ -18,27 +20,22 @@ const EntryDetails = (entry: Entry) => {
     case 'HealthCheck':
       let color: 'error' | 'info' | 'success' | 'warning' = 'warning';
       let value: number = 0;
-      let text: string = '';
       switch (entry.healthCheckRating) {
         case HealthCheckRating.Healthy:
           color = 'success';
           value = 0;
-          text = 'Healthy';
           break;
         case HealthCheckRating.LowRisk:
           color = 'info';
           value = 33;
-          text = 'Low risk';
           break;
         case HealthCheckRating.HighRisk:
           color = 'warning';
           value = 66;
-          text = 'High risk';
           break;
         case HealthCheckRating.CriticalRisk:
           color = 'error';
           value = 99;
-          text = 'Critical risk';
           break;
       }
       return {
@@ -46,7 +43,11 @@ const EntryDetails = (entry: Entry) => {
         details: (
           <Stack>
             <Typography variant="body1" color={color}>
-              {text}
+              {
+                healthCheckRatingOptions.find(
+                  (r) => r.value === entry.healthCheckRating,
+                )?.label
+              }
             </Typography>
             <LinearProgress
               variant="determinate"

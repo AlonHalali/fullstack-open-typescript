@@ -84,7 +84,13 @@ const PatientDetailView = () => {
         <Typography variant="body1">
           <strong>date of birth:</strong> {patient.dateOfBirth}
         </Typography>
-        <EntryForm patientId={patient.id} handleAddEntry={handleAddEntry} />
+
+        <EntryForm
+          patientId={patient.id}
+          handleAddEntry={handleAddEntry}
+          diagnoses={diagnoses}
+        />
+
         {patient.entries.length ? (
           <>
             <Typography variant="h5" component="h5" sx={{ pt: 3 }}>
