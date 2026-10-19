@@ -174,12 +174,10 @@ const EntryForm = ({ patientId, handleAddEntry, diagnoses }: Props) => {
       icon = <MedicalServices />;
       inputs = (
         <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">
-            Health Check Rating
-          </InputLabel>
+          <InputLabel id="label-health-check">Health Check Rating</InputLabel>
           <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
+            labelId="select-health-check"
+            id="select-health-check"
             value={newEntry.healthCheckRating}
             label="Health Check Rating"
             onChange={(event) => {
@@ -204,7 +202,7 @@ const EntryForm = ({ patientId, handleAddEntry, diagnoses }: Props) => {
       inputs = (
         <Stack spacing={3}>
           <TextField
-            id="outlined-basic"
+            id="entry-employer-name"
             label="Employer Name"
             variant="outlined"
             value={newEntry.employerName}
@@ -231,7 +229,7 @@ const EntryForm = ({ patientId, handleAddEntry, diagnoses }: Props) => {
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <TextField
                   type="date"
-                  id="outlined-basic"
+                  id="entry-startDate"
                   label="Start Date"
                   variant="outlined"
                   value={newEntry.sickLeaveStart}
@@ -246,7 +244,7 @@ const EntryForm = ({ patientId, handleAddEntry, diagnoses }: Props) => {
 
                 <TextField
                   type="date"
-                  id="outlined-basic"
+                  id="entry-endDate"
                   label="End Date"
                   variant="outlined"
                   value={newEntry.sickLeaveEnd}
@@ -284,7 +282,7 @@ const EntryForm = ({ patientId, handleAddEntry, diagnoses }: Props) => {
 
               <TextField
                 type="date"
-                id="outlined-basic"
+                id="entry-date"
                 label="Date"
                 variant="outlined"
                 value={newEntry.dischargeDate}
@@ -298,7 +296,7 @@ const EntryForm = ({ patientId, handleAddEntry, diagnoses }: Props) => {
               />
 
               <TextField
-                id="outlined-basic"
+                id="entry-criteria"
                 label="Criteria"
                 variant="outlined"
                 value={newEntry.dischargeCriteria}
@@ -380,7 +378,7 @@ const EntryForm = ({ patientId, handleAddEntry, diagnoses }: Props) => {
           <InputLabel id="demo-simple-select-label">Entry Type</InputLabel>
           <Select
             labelId="demo-simple-select-label"
-            id="demo-simple-select"
+            id="select-type"
             value={newEntry.type}
             label="Enter Type"
             onChange={(event) => {
@@ -406,7 +404,7 @@ const EntryForm = ({ patientId, handleAddEntry, diagnoses }: Props) => {
 
         <TextField
           type="date"
-          id="outlined-basic"
+          id="date"
           label="Date"
           variant="outlined"
           value={newEntry.date}
@@ -418,7 +416,7 @@ const EntryForm = ({ patientId, handleAddEntry, diagnoses }: Props) => {
         />
 
         <TextField
-          id="outlined-basic"
+          id="entry-description"
           label="Description"
           variant="outlined"
           value={newEntry.description}
@@ -432,7 +430,7 @@ const EntryForm = ({ patientId, handleAddEntry, diagnoses }: Props) => {
         />
 
         <TextField
-          id="outlined-basic"
+          id="entry-specialist"
           label="Specialist"
           variant="outlined"
           value={newEntry.specialist}
@@ -446,8 +444,8 @@ const EntryForm = ({ patientId, handleAddEntry, diagnoses }: Props) => {
         <FormControl fullWidth>
           <InputLabel id="demo-simple-select-label">Diagnosis Codes</InputLabel>
           <Select
-            labelId="demo-multiple-chip-label"
-            id="demo-multiple-chip"
+            labelId="select-codes"
+            id="select-codes"
             multiple
             value={newEntry.diagnosisCodes}
             label="Diagnosis Codes"
@@ -506,7 +504,7 @@ const EntryForm = ({ patientId, handleAddEntry, diagnoses }: Props) => {
           },
         }}
       >
-        Add Entry
+        Add New Entry
       </Button>
     </Paper>
   );
