@@ -5,8 +5,17 @@ import express, {
 } from 'express';
 
 import patientService from '../services/patientService.ts';
-import type { NonSensitivePatientInfo, NewPatient, Patient } from '../types.ts';
-import { newPatientParser, errorMiddleware } from '../middleware.ts';
+import type {
+  NonSensitivePatientInfo,
+  NewPatient,
+  Patient,
+  NewEntry,
+} from '../types.ts';
+import {
+  newPatientParser,
+  patientParser,
+  errorMiddleware,
+} from '../middleware.ts';
 
 const router = express.Router();
 
@@ -41,6 +50,24 @@ router.get(
     if (!patient)
       res.status(404).json({ error: 'Patient with this id not found!' });
     else res.json(patient);
+  },
+);
+
+router.post(
+  '/:id/entries',
+  patientParser,
+  (
+    req: Request<{ id: string }, unknown, NewEntry>,
+    res: Response<Patient | { error: string }>,
+    next: NextFunction,
+  ) => {
+    const id = req.params.id;
+    try {
+      const updatedPatient = patientService.addEntry(id, req.body);
+      res.send(updatedPatient);
+    } catch (error) {
+      next(error);
+    }
   },
 );
 
